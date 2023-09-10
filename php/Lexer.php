@@ -68,7 +68,8 @@ class Lexer
         }
 
         if (!empty($this->value)) {
-            $this->tokens[] = $this->createToken($this->state, implode('', $this->value), $pos);
+            // add the last token to the stack
+           $this->addToken(null, null, $pos);
         }
 
         return $this->tokens;
@@ -111,12 +112,12 @@ class Lexer
     /**
      * Decides when to add the token to the stack
      * 
-     * @param string $state
-     * @param string $char
+     * @param ?string $state
+     * @param ?string $char
      * @param int $pos
      * @return Lexer
      */
-    private function addToken(string $state, string $char, int $pos)
+    private function addToken(?string $state, ?string $char, int $pos)
     {
         if ($this->isSameState($state)) {
             // concat this char to the previous value, no need to update state
@@ -138,10 +139,10 @@ class Lexer
     /**
      * Updates the state
      * 
-     * @param string $state
+     * @param ?string $state
      * @return Lexer
      */
-    private function setState(string $state)
+    private function setState(?string $state)
     {
         $this->state = $state;
         return $this;
@@ -151,10 +152,10 @@ class Lexer
     /**
      * Checks if the current state is same with the previous
      * 
-     * @param array|string $state
+     * @param null|string|array $state
      * @return boolean
      */
-    private function isSameState(string|array $state)
+    private function isSameState(null|string|array $state)
     {
         if ($this->state === null) return true;
         if (is_array($state)) return in_array($this->state, $state);
@@ -195,11 +196,12 @@ class Lexer
     /**
      * Add the char to the current value stack
      * 
-     * @param string $char
+     * @param ?string $char
      * @return Lexer
      */
-    private function appendChar(string $char)
+    private function appendChar(?string $char)
     {
+        if ($char === null) return $this;
         $this->value[] = $char;
         return $this;
     }
