@@ -1,4 +1,5 @@
 <?php
+namespace php;
 
 /**
  * Converts a string value into an array of tokens
@@ -242,17 +243,9 @@ class Lexer
 
         return [
             'token' => $token,
-            'value' => $value,
+            'data' => $value,
             'pos' => $pos - $length,
             'length' => $length,
         ];
     }
 }
-
-$lexer = new Lexer();
-
-$input = readline('?: ');
-
-echo "\n";
-
-echo json_encode($lexer->parse($input), JSON_PRETTY_PRINT);
