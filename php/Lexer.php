@@ -44,7 +44,7 @@ class Lexer
      * @param string $string
      * @return array
      */
-    public function parse(string $string)
+    public function parse(string $string): array
     {
         $length = strlen($string);
         $pos = 0;
@@ -82,7 +82,7 @@ class Lexer
      * @param string $char
      * @return string
      */
-    private function determineState(string $char)
+    private function determineState(string $char): string
     {
         do {
             foreach ($this->symbols as $token => $symbols) {
@@ -118,7 +118,7 @@ class Lexer
      * @param int $pos
      * @return Lexer
      */
-    private function addToken(?string $state, ?string $char, int $pos)
+    private function addToken(?string $state, ?string $char, int $pos): self
     {
         if ($this->isSameState($state)) {
             // concat this char to the previous value, no need to update state
@@ -143,7 +143,7 @@ class Lexer
      * @param ?string $state
      * @return Lexer
      */
-    private function setState(?string $state)
+    private function setState(?string $state): self
     {
         $this->state = $state;
         return $this;
@@ -154,9 +154,9 @@ class Lexer
      * Checks if the current state is same with the previous
      * 
      * @param null|string|array $state
-     * @return boolean
+     * @return bool
      */
-    private function isSameState(null|string|array $state)
+    private function isSameState(null|string|array $state): bool
     {
         if ($this->state === null) return true;
         if (is_array($state)) return in_array($this->state, $state);
@@ -167,9 +167,9 @@ class Lexer
      * Checks if the character is actually meant to be a dot
      * 
      * @param string $nextChar
-     * @return boolean
+     * @return bool
      */
-    private function isRealDot(?string $nextChar)
+    private function isRealDot(?string $nextChar): bool
     {
         if ($nextChar === null) return true;
         $nextState = $this->determineState($nextChar);
@@ -182,9 +182,9 @@ class Lexer
      * @param string $char1
      * @param string $char2
      * @param string $char3
-     * @return boolean
+     * @return bool
      */
-    private function isRealComma(?string $char1, ?string $char2, ?string $char3)
+    private function isRealComma(?string $char1, ?string $char2, ?string $char3): bool
     {
         if ($char1 === null || $char3 === null) return true;
         $state1 = $this->determineState($char1);
@@ -200,7 +200,7 @@ class Lexer
      * @param ?string $char
      * @return Lexer
      */
-    private function appendChar(?string $char)
+    private function appendChar(?string $char): self
     {
         if ($char === null) return $this;
         $this->value[] = $char;
@@ -212,7 +212,7 @@ class Lexer
      * 
      * @return Lexer
      */
-    private function resetValue()
+    private function resetValue(): self
     {
         $this->value = [];
         return $this;
@@ -224,9 +224,9 @@ class Lexer
      * @param string $token
      * @param string $value
      * @param int $pos
-     * @return Lexer
+     * @return array
      */
-    private function createToken(string $token, string $value, int $pos)
+    private function createToken(string $token, string $value, int $pos): array
     {
         do {
             if ($token !== self::TOKEN_NUMBER) break;
