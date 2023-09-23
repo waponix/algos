@@ -73,7 +73,10 @@ class Lexer
            $this->addToken(null, null, $pos);
         }
 
-        return $this->tokens;
+        $tokens = $this->tokens;
+        $this->tokens = []; // clear the token stack
+
+        return $tokens;
     }
 
     /**
