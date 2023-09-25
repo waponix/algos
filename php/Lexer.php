@@ -61,6 +61,7 @@ class Lexer
             switch ($state) {
                 case self::TOKEN_DOT: $state = !$this->isRealDot($nextChar) ? $this->state : $state; break;
                 case self::TOKEN_COMMA: $state = !$this->isRealComma($char1, $char2, $char3) ? $this->state : $state; break;
+                case self::TOKEN_OPERATOR: $state = !$this->isRealOperator($char, $nextChar) ? self::TOKEN_NUMBER: $state; break;
             }
            
             $this->addToken($state, $char, $pos);
@@ -195,6 +196,21 @@ class Lexer
         $state3 = $this->determineState($char3);
 
         return !$this->isSameState(self::TOKEN_NUMBER) || !($state1 === self::TOKEN_NUMBER && $state2 === self::TOKEN_NUMBER && $state3 === self::TOKEN_NUMBER);
+    }
+
+    /**
+     * This checks if the plus or minus operator is not meant to sign a number
+     * @param string $currentChar
+     * @param string $nextChar
+     * @return bool
+     */
+    private function isRealOperator(?string $currentChar, ?string $nextChar): bool
+    {
+        if ($nextChar === null) return true;
+        if (!in_array($currentChar, ['+', '-'])) return true; // + and - are only checked because it might by signing a number
+
+        $nextState = $this->determineState($nextChar);
+        return !in_array($nextState, [self::TOKEN_NUMBER, self::TOKEN_STRING]);
     }
 
     /**
